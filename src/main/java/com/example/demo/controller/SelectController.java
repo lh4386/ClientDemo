@@ -1,16 +1,15 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.User;
+import com.example.demo.entity.UserVo;
 import com.example.demo.service.SelectService;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @CrossOrigin
 @RestController
@@ -22,7 +21,7 @@ public class SelectController {
 
     @ResponseBody
     @RequestMapping("/selectUser")
-    public User selectUser(HttpServletRequest request) {
+    public List<UserVo> selectUser(HttpServletRequest request) {
         StringBuffer str = new StringBuffer();
         try {
             BufferedInputStream in = new BufferedInputStream(request.getInputStream());
@@ -36,8 +35,22 @@ public class SelectController {
             ex.printStackTrace();
         }
         JSONObject obj= JSONObject.fromObject(str.toString());
-        User user= selectService.selectUser(obj.get("name").toString());
-        System.out.println("服务端=="+user.toString());
-        return user;
+        Map<String, Object> params = new HashMap<>();
+        params.put("usercode",obj.get("usercode").toString());
+        params.put("starttime",obj.get("starttime").toString());
+        params.put("endtime",obj.get("endtime").toString());
+        List<UserVo> list= selectService.selectUser(params);
+        if (list == null || list.size() == 0){
+            System.out.println("数据库查询为空");
+        }else{
+            System.out.println("数据库查询=="+list.get(0).getDname());
+        }
+        return list;
+    }
+
+    @RequestMapping("/userAll")
+    public List<UserVo> viewUserAll() {
+        List<UserVo> list= selectService.selectUserAll();
+        return list;
     }
 }

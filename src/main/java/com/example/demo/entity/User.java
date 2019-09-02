@@ -5,7 +5,7 @@ public class User {
 
     private String username;
 
-    private String department;
+    private Integer did;
 
     public String getUsercode() {
         return usercode;
@@ -23,20 +23,11 @@ public class User {
         this.username = username == null ? null : username.trim();
     }
 
-    public String getDepartment() {
-        return department;
+    public Integer getDid() {
+        return did;
     }
 
-    public void setDepartment(String department) {
-        this.department = department == null ? null : department.trim();
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "usercode='" + usercode + '\'' +
-                ", username='" + username + '\'' +
-                ", department='" + department + '\'' +
-                '}';
+    public void setDid(Integer did) {
+        this.did = did;
     }
 }

@@ -1,54 +1,97 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>select</title>
     <script src="/jquery-3.3.1.js" type="text/javascript" ></script>
 </head>
 <body>
-<input type="text" id="userId" placeholder="请输入查询工号" style="width: 170px">
-<button onclick="ajaxSubmit()" style="background:lightskyblue">查询</button>
-<br>
-<br>
-<div id="user"></div>
+<span>工号</span>
+<input type="text" id="userId" placeholder="请输入查询工号" style="width: 170px" />
+</br>
+<span>开始时间</span>
+<input type="date" id="startTime" />
+</br>
+<span>结束时间</span>
+<input type="date" id="endTime"/>
+</br>
+</br>
+<button onclick="ajaxSubmit()" style="background:lightskyblue" class="okbutton">查询</button>
+<div>
+    <table border="1px" style="border-collapse: collapse">
+    <thead>
+        <tr>
+            <th style='width: 70px'>工号</th>
+            <th style='width: 70px'>姓名</th>
+            <th style='width: 70px'>部门</th>
+        </tr>
+    </thead>
+    <tbody id="userAll">
+    </tbody>
+    </table>
+</div>
 
 <script type="text/javascript">
-    /*<![CDATA[*/
+    $("body").keydown(function() {
+        if (event.keyCode == "13") {//keyCode=13是回车键
+            $('.okbutton').click();//按钮的类选择器
+        }
+    });
+    $(function(){
+        $.ajax({
+            //请求方式
+            type: "post",
+            //请求路径
+            url: "/user/userAll",
+            //返回参数类型
+            dataType: "json",
+            //请求成功的回调函数
+            success: function(msg){
+                var str="";
+                for (var i = 0; i < msg.length; i++) {
+                    str+="<tr>"+
+                            "<td align=\"center\">"+msg[i].usercode+"</td>"+
+                            "<td align=\"center\">"+msg[i].username+"</td>"+
+                            "<td align=\"center\">"+msg[i].dname+"</td>"+
+                        "</tr>"
+                }
+                $("#userAll").html(str);
+            },
+            //请求失败的回调函数
+            error:function(msg){
+                console.log("err");
+            }
+        });
+    })
+
     function ajaxSubmit(){
         var usercode = $("#userId").val();
-        if (usercode.length == 0){
-            alert("请输入工号");
-            return;
-        }
+        var starttime = $("#startTime").val();
+        var endtime = $("#endTime").val();
         $.ajax({
             url: "/client",
             type: 'post',
             dataType: 'json',
-            data:{usercode : usercode},
-            success: function(data){
-                var str="";
-                str+="<table border=\"1\" style=\"border-collapse: collapse\">"+
-                "<thead>"+
-                "<tr>"+
-                    "<th style='width: 70px'>工号</th>"+
-                    "<th style='width: 70px'>姓名</th>"+
-                    "<th style='width: 70px'>部门</th>"+
-                "</tr>"+
-                "</thead>"+
-                "<tbody>"+
-                    "<tr>"+
-                    "<td align=\"center\">"+data.usercode+"</td>"+
-                    "<td align=\"center\">"+data.username+"</td>"+
-                    "<td align=\"center\">"+data.department+"</td>"+
-                    "</tr>"+
-                 "</tbody>"+
-                 "</table>";
-                document.getElementById("user").innerHTML=str;
+            data:{
+                usercode : usercode,
+                starttime : starttime,
+                endtime : endtime
+            },
+            success: function(msg){
+                    var str="";
+                    for (var i = 0; i < msg.length; i++) {
+                        str+="<tr>"+
+                            "<td align=\"center\">"+msg[i].usercode+"</td>"+
+                            "<td align=\"center\">"+msg[i].username+"</td>"+
+                            "<td align=\"center\">"+msg[i].dname+"</td>"+
+                            "</tr>";
+                    }
+                    $("#userAll").html(str);
+
+                /*document.getElementById("userAll").innerHTML=str;*/
             }
         });
     }
-    /*]]>*/
 </script>
-
 </body>
 </html>

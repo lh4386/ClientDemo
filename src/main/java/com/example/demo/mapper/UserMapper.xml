@@ -4,10 +4,10 @@
   <resultMap id="BaseResultMap" type="com.example.demo.entity.User" >
     <id column="usercode" property="usercode" jdbcType="VARCHAR" />
     <result column="username" property="username" jdbcType="VARCHAR" />
-    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="did" property="did" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    usercode, username, department
+    usercode, username, did
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -19,10 +19,15 @@
     delete from user
     where usercode = #{usercode,jdbcType=VARCHAR}
   </delete>
+  <select id="selectAll" resultType="com.example.demo.entity.UserVo">
+  select `user`.usercode,`user`.username,department.dname
+  from `user`
+  INNER JOIN department ON `user`.did=department.did
+  </select>
   <insert id="insert" parameterType="com.example.demo.entity.User" >
-    insert into user (usercode, username, department
+    insert into user (usercode, username, did
       )
-    values (#{usercode,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR}
+    values (#{usercode,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{did,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.example.demo.entity.User" >
@@ -34,8 +39,8 @@
       <if test="username != null" >
         username,
       </if>
-      <if test="department != null" >
-        department,
+      <if test="did != null" >
+        did,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -45,8 +50,8 @@
       <if test="username != null" >
         #{username,jdbcType=VARCHAR},
       </if>
-      <if test="department != null" >
-        #{department,jdbcType=VARCHAR},
+      <if test="did != null" >
+        #{did,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -56,8 +61,8 @@
       <if test="username != null" >
         username = #{username,jdbcType=VARCHAR},
       </if>
-      <if test="department != null" >
-        department = #{department,jdbcType=VARCHAR},
+      <if test="did != null" >
+        did = #{did,jdbcType=INTEGER},
       </if>
     </set>
     where usercode = #{usercode,jdbcType=VARCHAR}
@@ -65,7 +70,7 @@
   <update id="updateByPrimaryKey" parameterType="com.example.demo.entity.User" >
     update user
     set username = #{username,jdbcType=VARCHAR},
-      department = #{department,jdbcType=VARCHAR}
+      did = #{did,jdbcType=INTEGER}
     where usercode = #{usercode,jdbcType=VARCHAR}
   </update>
 </mapper>

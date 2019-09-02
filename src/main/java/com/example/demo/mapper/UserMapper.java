@@ -1,8 +1,10 @@
 package com.example.demo.mapper;
 
 import com.example.demo.entity.User;
+import com.example.demo.entity.UserVo;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
 @Mapper
 public interface UserMapper {
     int deleteByPrimaryKey(String usercode);
@@ -16,4 +18,6 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
+    List<UserVo> selectAll();
 }
